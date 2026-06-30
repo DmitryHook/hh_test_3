@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Записи ДДС{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dds/css/transaction_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Записи ДДС</h1>
+
+    <a href="{% url 'transaction_create' %}"
+       class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i>
+        Новая запись
+    </a>
+</div>
+
+<div class="row g-3 mb-3">
+
+    <div class="col-md-4">
+        <div class="stat-card stat-in">
+            <div class="label">Пополнения</div>
+            <div class="value">{{ total_in|floatformat:2 }} ₽</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card stat-out">
+            <div class="label">Списания</div>
+            <div class="value">{{ total_out|floatformat:2 }} ₽</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card stat-balance">
+            <div class="label">Баланс</div>
+            <div class="value">{{ balance|floatformat:2 }} ₽</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="filter-card">
+    <form method="get" id="filter-form">
+
+        <div class="row g-2 align-items-end">
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.date_from.label }}
+                </label>
+                {{ filter_form.date_from }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.date_to.label }}
+                </label>
+                {{ filter_form.date_to }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.status.label }}
+                </label>
+                {{ filter_form.status }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.transaction_type.label }}
+                </label>
+                {{ filter_form.transaction_type }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.category.label }}
+                </label>
+                {{ filter_form.category }}
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    {{ filter_form.subcategory.label }}
+                </label>
+                {{ filter_form.subcategory }}
+            </div>
+
+        </div>
+
+        <div class="row g-2 mt-0">
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100">
+                    Применить
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'transaction_list' %}"
+                class="btn btn-outline-secondary btn-sm w-100 d-block text-center">
+                    Сбросить
+                </a>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            Записи
+            <span class="badge bg-secondary ms-1">
+                {{ transactions|length }}
+            </span>
+        </span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                    <th>Тип</th>
+                    <th>Категория</th>
+                    <th>Подкатегория</th>
+                    <th class="text-end">Сумма</th>
+                    <th>Комментарий</th>
+                    <th style="width:200px"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for t in transactions %}
+                    <tr>
+                        <td class="text-nowrap">
+                            {{ t.date|date:"d.m.Y"|truncatechars:15 }}
+                        </td>
+
+                        <td title="{{ t.status|default:"" }}">
+                                {{ t.status|default:""|truncatechars:15 }}
+                        </td>
+
+                        <td title="{{ t.transaction_type }}">
+                            {% if t.transaction_type.name == "Пополнение" %}
+                                <span class="badge badge-status badge-in">
+                                    {{ t.transaction_type|truncatechars:15 }}
+                                </span>
+                            {% else %}
+                                <span class="badge badge-status badge-out">
+                                    {{ t.transaction_type|truncatechars:15 }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td title="{{ t.category.name }}">
+                            {{ t.category.name|truncatechars:15 }}
+                        </td>
+
+                        <td title="{{ t.subcategory.name }}">
+                            {{ t.subcategory.name|truncatechars:15 }}
+                        </td>
+
+                        <td class="text-end fw-semibold text-nowrap" title="{{ t.amount }} ₽">
+                            {{ t.amount|floatformat:2|truncatechars:15 }} ₽
+                        </td>
+
+                        <td class="text-muted"
+                            style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                            title="{{ t.comment }}">
+                            {{ t.comment|default:""|truncatechars:15 }}
+                        </td>
+
+                        <td class="text-end text-nowrap">
+                            <a href="{% url 'transaction_edit' t.pk %}"
+                                class="btn btn-outline-secondary action-btn"
+                                title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'transaction_delete' t.pk %}"
+                                class="btn btn-outline-danger action-btn"
+                                title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8"
+                            class="text-center text-muted py-4">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Записей нет.
+                            <a href="{% url 'transaction_create' %}">
+                                Создать первую
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'dds/js/transaction_list.js' %}"></script>
+{% endblock %}

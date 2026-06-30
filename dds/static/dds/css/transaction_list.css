@@ -1,0 +1,11 @@
+.stat-in {
+    background: linear-gradient(135deg,#1a7d52,#27ae60);
+}
+
+.stat-out {
+    background: linear-gradient(135deg,#c0392b,#e74c3c);
+}
+
+.stat-balance {
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Удалить{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>
+        Удаление
+    </h1>
+
+    <a href="{% url 'directory' %}"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>
+        Назад
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                <i class="bi bi-exclamation-circle-fill text-danger fs-1 mb-3 d-block"></i>
+
+                <p>
+                    Удалить «<strong>{{ object }}</strong>»?
+                </p>
+
+                <p class="text-muted small">
+                    Если есть связанные записи, удаление будет отклонено.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger me-2">
+                        Удалить
+                    </button>
+
+                    <a href="{% url 'directory' %}"
+                       class="btn btn-outline-secondary">
+                        Отмена
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

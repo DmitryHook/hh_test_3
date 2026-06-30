@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Справочники{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dds/css/directory.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>
+        Управление справочниками
+    </h1>
+</div>
+
+<ul class="nav nav-tabs" id="dirTabs">
+    <li class="nav-item">
+        <button class="nav-link active"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-statuses">
+            Статусы
+            <span class="badge bg-secondary">{{ statuses|length }}</span>
+        </button>
+    </li>
+
+    <li class="nav-item">
+        <button class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-types">
+            Типы
+            <span class="badge bg-secondary">{{ types|length }}</span>
+        </button>
+    </li>
+
+    <li class="nav-item">
+        <button class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-categories">
+            Категории
+            <span class="badge bg-secondary">{{ categories|length }}</span>
+        </button>
+    </li>
+
+    <li class="nav-item">
+        <button class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#tab-subcategories">
+            Подкатегории
+            <span class="badge bg-secondary">{{ subcategories|length }}</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <div class="tab-pane fade show active" id="tab-statuses">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Статусы</h5>
+            <a href="{% url 'status_create' %}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>
+                Добавить
+            </a>
+        </div>
+
+        <table class="table table-hover ref-table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in statuses %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td title="{{ s.name }}">{{ s.name|truncatechars:25 }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'status_edit' s.pk %}"
+                               class="btn btn-outline-secondary action-btn"
+                               title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'status_delete' s.pk %}"
+                               class="btn btn-outline-danger action-btn"
+                               title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3"
+                            class="text-muted text-center py-3">
+                            Нет статусов
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="tab-types">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Типы операций</h5>
+            <a href="{% url 'type_create' %}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>
+                Добавить
+            </a>
+        </div>
+
+        <table class="table table-hover ref-table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for t in types %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td title="{{ t.name }}">{{ t.name|truncatechars:25 }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'type_edit' t.pk %}"
+                               class="btn btn-outline-secondary action-btn"
+                               title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'type_delete' t.pk %}"
+                               class="btn btn-outline-danger action-btn"
+                               title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3"
+                            class="text-muted text-center py-3">
+                            Нет типов
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="tab-categories">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Категории</h5>
+            <a href="{% url 'category_create' %}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>
+                Добавить
+            </a>
+        </div>
+
+        <table class="table table-hover ref-table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Тип</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in categories %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td title="{{ c.name }}">{{ c.name|truncatechars:25 }}</td>
+                        <td title="{{ c.transaction_type }}">{{ c.transaction_type|truncatechars:25 }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'category_edit' c.pk %}"
+                               class="btn btn-outline-secondary action-btn"
+                               title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'category_delete' c.pk %}"
+                               class="btn btn-outline-danger action-btn"
+                               title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4"
+                            class="text-muted text-center py-3">
+                            Нет категорий
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="tab-subcategories">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Подкатегории</h5>
+            <a href="{% url 'subcategory_create' %}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>
+                Добавить
+            </a>
+        </div>
+
+        <table class="table table-hover ref-table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Тип</th>
+                    <th class="col-actions"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in subcategories %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td title="{{ s.name }}">{{ s.name|truncatechars:25 }}</td>
+                        <td title="{{ s.category.name }}">{{ s.category.name|truncatechars:25 }}</td>
+                        <td title="{{ s.category.transaction_type }}">{{ s.category.transaction_type|truncatechars:25 }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'subcategory_edit' s.pk %}"
+                               class="btn btn-outline-secondary action-btn"
+                               title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{% url 'subcategory_delete' s.pk %}"
+                               class="btn btn-outline-danger action-btn"
+                               title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5"
+                            class="text-muted text-center py-3">
+                            Нет подкатегорий
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
